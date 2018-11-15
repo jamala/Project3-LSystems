@@ -34,11 +34,13 @@ function onLoad(framework) {
   });
 
   gui.add(lsys, 'axiom').onChange(function(newVal) {
-    lsys.UpdateAxiom(newVal);
+    console.log("changing axiom" + newVal);
+    lsys.updateAxiom(newVal);
     doLsystem(lsys, lsys.iterations, turtle);
   });
 
   gui.add(lsys, 'iterations', 0, 12).step(1).onChange(function(newVal) {
+    console.log("changing iterations" + newVal);
     clearScene(turtle);
     doLsystem(lsys, newVal, turtle);
   });
@@ -54,10 +56,11 @@ function clearScene(turtle) {
 }
 
 function doLsystem(lsystem, iterations, turtle) {
-    var result = lsystem.DoIterations(iterations);
+    var result = lsystem.doIterations(iterations);
     turtle.clear();
     turtle = new Turtle(turtle.scene);
     turtle.renderSymbols(result);
+    console.log("dolsystem")
 }
 
 // called on frame updates

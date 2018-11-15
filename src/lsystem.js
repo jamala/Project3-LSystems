@@ -7,26 +7,86 @@ function Rule(prob, str) {
 
 // TODO: Implement a linked list class and its requisite functions
 // as described in the homework writeup
+var Node = function(character) {
+	return {
+		next: null,
+		previous: null,
+		character: character,
+	}
+}
 
-// TODO: Turn the string into linked list 
+export class LinkedList {
+	constructor() {
+		this.head = null;
+		this.tail = null;
+	}
+
+	//adds a node to the end of the list
+	append(node) {
+		if (this.head === null) {
+			this.head = node;
+			this.tail = node;
+		} else {
+			this.tail.next = node;
+			node.previous = this.tail;
+			this.tail = node;
+		}
+	}
+}
+
 export function stringToLinkedList(input_string) {
 	// ex. assuming input_string = "F+X"
 	// you should return a linked list where the head is 
 	// at Node('F') and the tail is at Node('X')
 	var ll = new LinkedList();
+
+	for (let char of input_string) {
+		ll.append(Node(char));
+	}
 	return ll;
 }
 
-// TODO: Return a string form of the LinkedList
 export function linkedListToString(linkedList) {
 	// ex. Node1("F")->Node2("X") should be "FX"
 	var result = "";
+	let current = linkedList.head;
+	while (current !== null) {
+		result += current.character;
+		current = current.next;
+	}
 	return result;
 }
 
 // TODO: Given the node to be replaced, 
 // insert a sub-linked-list that represents replacementString
+// assumption: node is in list, list is not empty, sub-list is not empty
 function replaceNode(linkedList, node, replacementString) {
+	let replacementList = stringToLinkedList(replacementString);
+
+
+	//case when node is the only item in the list
+	if (node.previous === null && node.next === null) {
+		linkedList.head = replacementList.head;
+		linkedList.tail = replacementList.tail;
+	} else if (node.previous === null) {
+		// at beginning
+		linkedList.head = replacementList.head;
+		replacementList.tail.next = node.next;
+		node.next.previous = replacementList.tail;
+	} else if (node.next === null) {
+		// at end
+		linkedList.tail = replacementList.tail;
+		replacementList.head.previous = node.previous;
+		node.previous.next = replacementList.head;
+	} else {
+		//in the middle somewhere
+		replacementList.tail.next = node.next;
+		replacementList.head.previous = node.previous;
+		node.next.previous = replacementList.tail;
+		node.previous.next = replacementList.head;
+	}
+
+
 }
 
 export default function Lsystem(axiom, grammar, iterations) {
@@ -70,7 +130,8 @@ export default function Lsystem(axiom, grammar, iterations) {
 	// The implementation we have provided you just returns a linked
 	// list of the axiom.
 	this.doIterations = function(n) {	
-		var lSystemLL = StringToLinkedList(this.axiom);
+		var lSystemLL = stringToLinkedList(this.axiom);
+		console.log(lSystemLL);
 		return lSystemLL;
 	}
 }
